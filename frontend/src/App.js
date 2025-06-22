@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Chat from './components/Chat';
 import DocumentManager from './components/DocumentManager';
@@ -8,7 +8,7 @@ import './App.css';
 
 function Navigation() {
   const location = useLocation();
-  
+
   const navItems = [
     { path: '/', icon: MessageSquare, label: 'Chat' },
     { path: '/documents', icon: FileText, label: 'Documents' },

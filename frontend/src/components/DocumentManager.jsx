@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Upload, Link, FileText, Trash2, AlertCircle, CheckCircle, Clock, Plus } from 'lucide-react';
-import api from '../services/api';
+import React, { useState, useEffect } from "react";
+import {
+  Upload,
+  Link,
+  FileText,
+  Trash2,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Plus,
+} from "lucide-react";
+import api from "../services/api";
 
 function DocumentManager() {
   const [documents, setDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [uploadType, setUploadType] = useState('url');
+  const [uploadType, setUploadType] = useState("url");
   const [uploadData, setUploadData] = useState({
-    title: '',
-    url: '',
+    title: "",
+    url: "",
     file: null,
-    text: ''
+    text: "",
   });
 
   useEffect(() => {
@@ -23,42 +32,45 @@ function DocumentManager() {
       const docs = await api.getDocuments();
       setDocuments(docs);
     } catch (error) {
-      console.error('Error loading documents:', error);
+      console.error("Error loading documents:", error);
     }
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!uploadData.title.trim()) {
-      alert('Please enter a title');
+      alert("Please enter a title");
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       const formData = new FormData();
-      formData.append('title', uploadData.title);
-      formData.append('source_type', uploadType);
+      formData.append("title", uploadData.title);
+      formData.append("source_type", uploadType);
 
-      if (uploadType === 'url') {
+      if (uploadType === "url") {
         if (!uploadData.url.trim()) {
-          alert('Please enter a URL');
+          alert("Please enter a URL");
+          setIsLoading(false);
           return;
         }
-        formData.append('url', uploadData.url);
-      } else if (uploadType === 'file') {
+        formData.append("url", uploadData.url);
+      } else if (uploadType === "file") {
         if (!uploadData.file) {
-          alert('Please select a file');
+          alert("Please select a file");
+          setIsLoading(false);
           return;
         }
-        formData.append('file', uploadData.file);
-      } else if (uploadType === 'text') {
+        formData.append("file", uploadData.file);
+      } else if (uploadType === "text") {
         if (!uploadData.text.trim()) {
-          alert('Please enter text content');
+          alert("Please enter text content");
+          setIsLoading(false);
           return;
         }
-        formData.append('text_content', uploadData.text);
+        formData.append("text_content", uploadData.text);
       }
 
       await api.uploadDocument(formData);
@@ -66,15 +78,15 @@ function DocumentManager() {
       resetUploadForm();
       loadDocuments();
     } catch (error) {
-      console.error('Error uploading document:', error);
-      alert('Error uploading document. Please try again.');
+      console.error("Error uploading document:", error);
+      alert("Error uploading document. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (documentId) => {
-    if (!window.confirm('Are you sure you want to delete this document?')) {
+    if (!window.confirm("Are you sure you want to delete this document?")) {
       return;
     }
 
@@ -82,29 +94,29 @@ function DocumentManager() {
       await api.deleteDocument(documentId);
       loadDocuments();
     } catch (error) {
-      console.error('Error deleting document:', error);
-      alert('Error deleting document. Please try again.');
+      console.error("Error deleting document:", error);
+      alert("Error deleting document. Please try again.");
     }
   };
 
   const resetUploadForm = () => {
     setUploadData({
-      title: '',
-      url: '',
+      title: "",
+      url: "",
       file: null,
-      text: ''
+      text: "",
     });
-    setUploadType('url');
+    setUploadType("url");
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'completed':
+      case "completed":
         return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'failed':
+      case "failed":
         return <AlertCircle className="w-4 h-4 text-red-500" />;
-      case 'pending':
-      case 'processing':
+      case "pending":
+      case "processing":
         return <Clock className="w-4 h-4 text-yellow-500" />;
       default:
         return <Clock className="w-4 h-4 text-gray-500" />;
@@ -116,20 +128,20 @@ function DocumentManager() {
   };
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
+    <div className="px-4 sm:px-6 lg:px-8 py-8">
+      <div className="sm:flex sm:items-center mb-8">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900">Document Manager</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="text-3xl font-bold text-gray-900">Document Manager</h1>
+          <p className="mt-2 text-base text-gray-700">
             Upload and manage your documentation sources for the RAG system.
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button
             onClick={() => setShowUploadModal(true)}
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-5 py-2 text-base font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-5 h-5 mr-2" />
             Add Document
           </button>
         </div>
@@ -143,19 +155,19 @@ function DocumentManager() {
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                       Document
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                       Chunks
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                       Date
                     </th>
                     <th className="relative px-6 py-3">
@@ -166,25 +178,43 @@ function DocumentManager() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {documents.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="px-6 py-4 text-center text-sm text-gray-500">
-                        No documents uploaded yet. Click "Add Document" to get started.
+                      <td
+                        colSpan="6"
+                        className="px-6 py-12 text-center text-lg text-gray-400"
+                      >
+                        <FileText className="mx-auto mb-4 w-10 h-10 text-gray-200" />
+                        No documents uploaded yet.
+                        <br />
+                        <span className="text-sm text-gray-500">
+                          Click "Add Document" to get started.
+                        </span>
                       </td>
                     </tr>
                   ) : (
                     documents.map((doc) => (
-                      <tr key={doc.id}>
+                      <tr key={doc.id} className="hover:bg-blue-50 transition">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <FileText className="w-5 h-5 text-gray-400 mr-3" />
                             <div>
-                              <div className="text-sm font-medium text-gray-900">{doc.title}</div>
+                              <div className="text-sm font-medium text-gray-900">
+                                {doc.title}
+                              </div>
                               {doc.url && (
-                                <div className="text-sm text-gray-500 truncate max-w-xs">
-                                  {doc.url}
+                                <div className="text-xs text-blue-600 truncate max-w-xs underline">
+                                  <a
+                                    href={doc.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {doc.url}
+                                  </a>
                                 </div>
                               )}
                               {doc.error_message && (
-                                <div className="text-sm text-red-500">{doc.error_message}</div>
+                                <div className="text-xs text-red-500">
+                                  {doc.error_message}
+                                </div>
                               )}
                             </div>
                           </div>
@@ -211,7 +241,8 @@ function DocumentManager() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
                             onClick={() => handleDelete(doc.id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-600 hover:text-red-900 focus:outline-none focus:ring-2 focus:ring-red-400 rounded"
+                            title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -228,11 +259,12 @@ function DocumentManager() {
 
       {/* Upload Modal */}
       {showUploadModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="relative mx-auto p-6 border w-full max-w-md shadow-xl rounded-lg bg-white">
             <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Document</h3>
-              
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Add New Document
+              </h3>
               <form onSubmit={handleUpload}>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -241,10 +273,13 @@ function DocumentManager() {
                   <input
                     type="text"
                     value={uploadData.title}
-                    onChange={(e) => setUploadData({...uploadData, title: e.target.value})}
+                    onChange={(e) =>
+                      setUploadData({ ...uploadData, title: e.target.value })
+                    }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter document title"
                     required
+                    autoFocus
                   />
                 </div>
 
@@ -253,35 +288,35 @@ function DocumentManager() {
                     Source Type
                   </label>
                   <div className="flex space-x-4">
-                    <label className="flex items-center">
+                    <label className="flex items-center cursor-pointer">
                       <input
                         type="radio"
                         value="url"
-                        checked={uploadType === 'url'}
+                        checked={uploadType === "url"}
                         onChange={(e) => setUploadType(e.target.value)}
-                        className="mr-2"
+                        className="mr-2 accent-blue-600"
                       />
                       <Link className="w-4 h-4 mr-1" />
                       URL
                     </label>
-                    <label className="flex items-center">
+                    <label className="flex items-center cursor-pointer">
                       <input
                         type="radio"
                         value="file"
-                        checked={uploadType === 'file'}
+                        checked={uploadType === "file"}
                         onChange={(e) => setUploadType(e.target.value)}
-                        className="mr-2"
+                        className="mr-2 accent-blue-600"
                       />
                       <Upload className="w-4 h-4 mr-1" />
                       File
                     </label>
-                    <label className="flex items-center">
+                    <label className="flex items-center cursor-pointer">
                       <input
                         type="radio"
                         value="text"
-                        checked={uploadType === 'text'}
+                        checked={uploadType === "text"}
                         onChange={(e) => setUploadType(e.target.value)}
-                        className="mr-2"
+                        className="mr-2 accent-blue-600"
                       />
                       <FileText className="w-4 h-4 mr-1" />
                       Text
@@ -289,7 +324,7 @@ function DocumentManager() {
                   </div>
                 </div>
 
-                {uploadType === 'url' && (
+                {uploadType === "url" && (
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Documentation URL
@@ -297,7 +332,9 @@ function DocumentManager() {
                     <input
                       type="url"
                       value={uploadData.url}
-                      onChange={(e) => setUploadData({...uploadData, url: e.target.value})}
+                      onChange={(e) =>
+                        setUploadData({ ...uploadData, url: e.target.value })
+                      }
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="https://example.com/docs"
                       required
@@ -305,14 +342,19 @@ function DocumentManager() {
                   </div>
                 )}
 
-                {uploadType === 'file' && (
+                {uploadType === "file" && (
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Upload File
                     </label>
                     <input
                       type="file"
-                      onChange={(e) => setUploadData({...uploadData, file: e.target.files[0]})}
+                      onChange={(e) =>
+                        setUploadData({
+                          ...uploadData,
+                          file: e.target.files[0],
+                        })
+                      }
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       accept=".pdf,.doc,.docx,.txt,.md,.py,.js,.html,.css,.json"
                       required
@@ -323,14 +365,16 @@ function DocumentManager() {
                   </div>
                 )}
 
-                {uploadType === 'text' && (
+                {uploadType === "text" && (
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Text Content
                     </label>
                     <textarea
                       value={uploadData.text}
-                      onChange={(e) => setUploadData({...uploadData, text: e.target.value})}
+                      onChange={(e) =>
+                        setUploadData({ ...uploadData, text: e.target.value })
+                      }
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       rows="6"
                       placeholder="Paste your documentation text here..."
@@ -346,4 +390,24 @@ function DocumentManager() {
                       setShowUploadModal(false);
                       resetUploadForm();
                     }}
-                    className="px-4 py-2 text-sm font-medium text-gray
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    {isLoading ? "Uploading..." : "Upload"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+export default DocumentManager;
